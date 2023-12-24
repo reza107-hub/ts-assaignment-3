@@ -1,5 +1,7 @@
 import { Types } from 'mongoose'
 
+export type SortOrder = 'asc' | 'desc'
+
 export type TTag = {
   name: string
   isDeleted: boolean
