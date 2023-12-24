@@ -69,8 +69,7 @@ const courseSchema = new Schema<TCourse>(
   {
     toJSON: {
       virtuals: true,
-    },
-    toObject: { virtuals: true },
+    }
   },
 )
 
