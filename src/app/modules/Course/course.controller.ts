@@ -64,11 +64,22 @@ const getBestCourseWithHighestRating = catchAsync(async (req, res) => {
     },
   })
 })
-
+const updateCourse = catchAsync(async (req, res) => {
+  const payload = req.body
+  const id = req.params.courseId
+  const result = await courseService.updateCourseIntoDB(id, payload)
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Course updated successfully',
+    data: result,
+  })
+})
 
 export const courseControllers = {
   createCourse,
   getAllCourses,
   getCourseWithReview,
   getBestCourseWithHighestRating,
+  updateCourse,
 }

@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import httpStatus from 'http-status'
+import AppError from '../../error/AppError'
 import { Review } from '../Review/review.model'
 import { allowedSortFields } from './course.constant'
 import { SortOrder, TCourse } from './course.interface'
@@ -78,9 +80,33 @@ const getTheBestCourseWithHighestRatingFromDB = async () => {
   return { bestCourse, highestAverageRating, reviewCount }
 }
 
+
+const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
+  const { details, ...courseRemainingData } = payload
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const updateObject: any = {}
+  if (details?.level || details?.description) {
+    updateObject['details.level'] = details?.level
+    updateObject['details.description'] = details?.description
+  }
+
+  const updatedCourse = await Course.findByIdAndUpdate(
+    id,
+    { ...courseRemainingData, ...updateObject },
+    { new: true, runValidators: true },
+  )
+
+  if (!updatedCourse) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course')
+  }
+
+  return updatedCourse
+}
 export const courseService = {
   createCourseIntoDB,
   getPaginatedAndFilterCoursesFromDB,
   getCourseWithReviewFromDB,
   getTheBestCourseWithHighestRatingFromDB,
+  updateCourseIntoDB,
 }
