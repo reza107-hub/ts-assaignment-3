@@ -33,8 +33,42 @@ const getAllCourses = catchAsync(async (req, res) => {
   })
 })
 
+const getCourseWithReview = catchAsync(async (req, res) => {
+  const id: string = req.params.courseId
+  const { result, reviews } = await courseService.getCourseWithReviewFromDB(id)
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Course and Reviews retrieved successfully',
+    data: {
+      course: {
+        ...result?.toObject(),
+      },
+      reviews: reviews.map((review) => review.toObject()),
+    },
+  })
+})
+
+
+const getBestCourseWithHighestRating = catchAsync(async (req, res) => {
+  const { bestCourse, highestAverageRating, reviewCount } =
+    await courseService.getTheBestCourseWithHighestRatingFromDB()
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Best course retrieved successfully',
+    data: {
+      course: bestCourse,
+      averageRating: highestAverageRating.toFixed(1),
+      reviewCount: reviewCount,
+    },
+  })
+})
+
 
 export const courseControllers = {
   createCourse,
   getAllCourses,
+  getCourseWithReview,
+  getBestCourseWithHighestRating,
 }

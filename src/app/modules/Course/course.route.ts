@@ -11,4 +11,6 @@ router.post(
   courseControllers.createCourse,
 )
 
+router.get('/best', courseControllers.getBestCourseWithHighestRating)
+
 export const CourseRoute = router

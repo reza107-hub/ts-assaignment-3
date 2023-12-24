@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Review } from '../Review/review.model'
 import { allowedSortFields } from './course.constant'
 import { SortOrder, TCourse } from './course.interface'
 import { Course } from './course.model'
@@ -44,7 +45,42 @@ const getPaginatedAndFilterCoursesFromDB = async (
   const totalCourse = await Course.find()
   return { result, limit, page, total: totalCourse.length }
 }
+
+const getCourseWithReviewFromDB = async (id: string) => {
+  const result = await Course.findById({ _id: new Object(id) })
+  const reviews = await Review.find({ courseId: id })
+
+  return { result, reviews }
+}
+
+const getTheBestCourseWithHighestRatingFromDB = async () => {
+  const courses = await Course.find()
+  let bestCourse = null
+  let highestAverageRating = 0
+  let reviewCount = 0
+
+  for (const course of courses) {
+    const reviews = await Review.find({ courseId: course._id })
+
+    const averageRating =
+      reviews.length > 0
+        ? reviews.reduce((sum, review) => sum + review.rating, 0) /
+          reviews.length
+        : 0
+
+    if (averageRating > highestAverageRating) {
+      bestCourse = course
+      highestAverageRating = averageRating
+      reviewCount = reviews.length
+    }
+  }
+
+  return { bestCourse, highestAverageRating, reviewCount }
+}
+
 export const courseService = {
   createCourseIntoDB,
   getPaginatedAndFilterCoursesFromDB,
+  getCourseWithReviewFromDB,
+  getTheBestCourseWithHighestRatingFromDB,
 }

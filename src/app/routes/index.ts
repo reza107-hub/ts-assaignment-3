@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { CategoryRoutes } from '../modules/Category/category.route'
 import { CourseRoute } from '../modules/Course/course.route'
-import { CoursePaginatedAndFilterRoute } from '../modules/Course/course.paginated.filtered.route'
+import { CoursesRoute } from '../modules/Course/courses.route'
 import { reviewRoute } from '../modules/Review/review.route'
 const router = Router()
 
@@ -16,7 +16,7 @@ const moduleRoutes = [
   },
   {
     path: '/courses',
-    route: CoursePaginatedAndFilterRoute,
+    route: CoursesRoute,
   },
   {
     path: '/reviews',
