@@ -2,9 +2,18 @@
 import httpStatus from 'http-status'
 import AppError from '../../error/AppError'
 import { Review } from '../Review/review.model'
-import { allowedSortFields } from './course.constant'
 import { SortOrder, TCourse } from './course.interface'
 import { Course } from './course.model'
+import {
+  allowedSortFields,
+  dateFilter,
+  filterByLanguage,
+  filterByLevel,
+  filterByProvider,
+  priceFilter,
+  sortOptions,
+  tagFilter,
+} from './course.constant'
 
 const createCourseIntoDB = async (payload: TCourse) => {
   const result = await Course.create(payload)
@@ -13,9 +22,23 @@ const createCourseIntoDB = async (payload: TCourse) => {
 
 
 const getPaginatedAndFilterCoursesFromDB = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   query: Record<string, any>,
 ) => {
-  const { page = 1, limit = 10, sortBy, sortOrder, minPrice, maxPrice } = query
+  const {
+    page = 1,
+    limit = 10,
+    sortBy,
+    sortOrder,
+    minPrice,
+    maxPrice,
+    tags,
+    endDate,
+    startDate,
+    language,
+    provider,
+    level,
+  } = query
 
   if (sortBy && !allowedSortFields.includes(sortBy as string)) {
     throw new Error(
@@ -24,26 +47,51 @@ const getPaginatedAndFilterCoursesFromDB = async (
       )}`,
     )
   }
-  const sortOptions: [string, SortOrder][] = []
+
   if (sortBy) {
     sortOptions.push([sortBy as string, sortOrder as SortOrder])
   }
-  const priceFilter: Record<string, any> = {}
-  if (minPrice !== undefined) {
-    priceFilter.price = { $gte: parseFloat(minPrice as string) }
-  }
-  if (maxPrice !== undefined) {
+
+  if (minPrice !== undefined && maxPrice !== undefined) {
     priceFilter.price = {
-      ...priceFilter.price,
+      $gte: parseFloat(minPrice as string),
       $lte: parseFloat(maxPrice as string),
     }
   }
 
+  if (tags) {
+    tagFilter['tags.name'] = tags
+  }
+
+  if (startDate !== undefined && endDate !== undefined) {
+    dateFilter.startDate = { $gte: startDate }
+    dateFilter.endDate = { $lte: endDate }
+  }
+
+  if (language !== undefined) {
+    filterByLanguage.language = language
+  }
+
+  if (provider !== undefined) {
+    filterByProvider.provider = provider
+  }
+
+  if (level !== undefined) {
+    filterByLevel['details.level'] = level
+  }
   const skip = (page - 1) * limit
-  const result = await Course.find(priceFilter)
+  const result = await Course.find({
+    ...priceFilter,
+    ...tagFilter,
+    ...dateFilter,
+    ...filterByLanguage,
+    ...filterByProvider,
+    ...filterByLevel,
+  })
     .sort(sortOptions)
     .skip(skip)
     .limit(parseInt(limit as string))
+
   const totalCourse = await Course.find()
   return { result, limit, page, total: totalCourse.length }
 }
