@@ -82,7 +82,7 @@ const getTheBestCourseWithHighestRatingFromDB = async () => {
 
 
 const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
-  const { details, ...courseRemainingData } = payload
+  const { tags, details, ...courseRemainingData } = payload
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateObject: any = {}
@@ -90,6 +90,14 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
     updateObject['details.level'] = details?.level
     updateObject['details.description'] = details?.description
   }
+
+   if (tags && Array.isArray(tags) && tags.length > 0) {
+     const updatedTags = tags.filter((tag) => !tag.isDeleted)
+
+     if (updatedTags.length > 0) {
+       updateObject['tags'] = updatedTags
+     }
+   }
 
   const updatedCourse = await Course.findByIdAndUpdate(
     id,
