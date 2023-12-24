@@ -18,14 +18,17 @@ const createCourse = catchAsync(async (req, res) => {
 
 const getAllCourses = catchAsync(async (req, res) => {
   // console.log(req.query)
-  const result = await courseService.getPaginatedAndFilterCoursesFromDB(
-    req.query,
-  )
-
+  const { result, limit, page, total } =
+    await courseService.getPaginatedAndFilterCoursesFromDB(req.query)
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: 'Courses retrieved successfully',
+    meta: {
+      page: parseInt(page),
+      limit: parseInt(limit),
+      total: total,
+    },
     data: result,
   })
 })
