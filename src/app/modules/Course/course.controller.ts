@@ -15,7 +15,6 @@ const createCourse = catchAsync(async (req, res) => {
   })
 })
 
-
 const getAllCourses = catchAsync(async (req, res) => {
   // console.log(req.query)
   const { result, limit, page, total } =
@@ -48,7 +47,6 @@ const getCourseWithReview = catchAsync(async (req, res) => {
     },
   })
 })
-
 
 const getBestCourseWithHighestRating = catchAsync(async (req, res) => {
   const { bestCourse, highestAverageRating, reviewCount } =

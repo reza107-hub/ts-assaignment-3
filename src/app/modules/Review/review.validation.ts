@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 const reviewValidationSchema = z.object({
   body: z.object({
@@ -8,8 +8,8 @@ const reviewValidationSchema = z.object({
     }),
     review: z.string(),
   }),
-});
+})
 
 export const reviewValidation = {
   reviewValidationSchema,
-};
+}

@@ -20,7 +20,6 @@ const createCourseIntoDB = async (payload: TCourse) => {
   return result
 }
 
-
 const getPaginatedAndFilterCoursesFromDB = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   query: Record<string, any>,
@@ -128,7 +127,6 @@ const getTheBestCourseWithHighestRatingFromDB = async () => {
   return { bestCourse, highestAverageRating, reviewCount }
 }
 
-
 const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
   const { tags, details, ...courseRemainingData } = payload
 
@@ -139,13 +137,13 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
     updateObject['details.description'] = details?.description
   }
 
-   if (tags && Array.isArray(tags) && tags.length > 0) {
-     const updatedTags = tags.filter((tag) => !tag.isDeleted)
+  if (tags && Array.isArray(tags) && tags.length > 0) {
+    const updatedTags = tags.filter((tag) => !tag.isDeleted)
 
-     if (updatedTags.length > 0) {
-       updateObject['tags'] = updatedTags
-     }
-   }
+    if (updatedTags.length > 0) {
+      updateObject['tags'] = updatedTags
+    }
+  }
 
   const updatedCourse = await Course.findByIdAndUpdate(
     id,

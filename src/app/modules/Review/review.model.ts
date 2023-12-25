@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose';
-import { TReview } from './review.interface';
+import { Schema, model } from 'mongoose'
+import { TReview } from './review.interface'
 
 const reviewSchema = new Schema<TReview>({
   courseId: {
@@ -18,6 +18,6 @@ const reviewSchema = new Schema<TReview>({
     required: true,
     trim: true,
   },
-});
+})
 
-export const Review = model<TReview>('Review', reviewSchema);
+export const Review = model<TReview>('Review', reviewSchema)

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SortOrder } from "./course.interface"
+import { SortOrder } from './course.interface'
 
 export const allowedSortFields = [
   'title',
